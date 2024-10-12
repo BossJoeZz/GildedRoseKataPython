@@ -5,56 +5,35 @@ from gilded_rose import Item, GildedRose
 
 
 class GildedRoseTest(unittest.TestCase):
-    def test_foo(self):
-        items = [Item("foo", 0, 0)]
-        gilded_rose = GildedRose(items)
-        gilded_rose.update_quality()
-        self.assertEquals("fixme", items[0].name)
-
-    def test_vest_item_should_decrease_after_one_day(self):
-        vest = "+5 Dexterity Vest"
-        items = [Item(vest, 1, 2), Item(vest, 9, 19), Item(vest, 4, 6)]
+    # According to the description provided in the readme, Aged Brie is a backstage pass, and its quality should be reduced to 0 after the concert. However, in the original code, this is an incorrect test (indicating that the logic of the original code does not reduce the quality to 0)
+    def test_aged_brie(self):
+        Aged_Brie = "Aged Brie"
+        items = [Item(Aged_Brie, -1, 20)]
         gr = GildedRose(items)
 
         gr.update_quality()
+        self.assertEqual(0, items[0].quality)
 
-        self.assertEqual([(item.sell_in, item.quality) for item in items], [(0, 1), (8, 18), (3, 5)])
-
-    def test_aged_brie_should_increase_in_quality(self):
-        elixir = "Elixir of the Mongoose"
-        items = [Item(elixir, 1, 2), Item(elixir, 3, 4), Item(elixir, 5, 10)]
-        gr = GildedRose(items)
-
-        gr.update_quality()
-
-        self.assertEqual([(item.sell_in, item.quality) for item in items], [(1, 2), (3, 2), (5, 6)])
-
-    def test_sulfuras_should_not_change(self):
+    # According to the description provided in the readme, Sulfuras is a legendary item and as such its Quality is 80 and it never alters. Therefore, the quality should return to 80, however, in the original code, this is an incorrect test (indicating that the logic of the original code does not fix the quality at 80)
+    def test_sulfuras(self):
         sulfuras = "Sulfuras, Hand of Ragnaros"
-        items = [Item(sulfuras, 1, 2), Item(sulfuras, 5, 2)]
+        items = [Item(sulfuras, 0, 75)]
         gr = GildedRose(items)
 
         gr.update_quality()
 
-        self.assertEqual([(item.sell_in, item.quality) for item in items], [(3, 4), (9, 10)])
+        self.assertEqual(80, items[0].quality)
 
-    def test_backstage_pass_increases_in_quality(self):
-        backstage = "Backstage passes to a TAFKAL80ETC concert"
-        items = [Item(backstage, 3, 3), Item(backstage, 5, 1), Item(backstage, 2, 3)]
-        gr = GildedRose(items)
-    
-        gr.update_quality()
-
-        self.assertEqual([(item.sell_in, item.quality) for item in items], [(1, 2), (3, 4), (5, 6)])
-
-    def test_backstage_pass_quality_drops_to_zero(self):
-        cake = "Conjured Mana Cake"
-        items = [Item(cake, 1, 2), Item(cake, 3, 4)]
+    # According to the description provided in the readme, "Conjured" items degrade in Quality twice as fast as normal items. Therefore, the quality should be 10-2=8 after one day. However, in the original code, this is an incorrect test (indicating that the logic of the original code does not achieve a faster quality reduction speed for conjured items)
+    def test_conjured(self):
+        conjured = "Conjured Mana Cake"
+        items = [Item(conjured, 5, 10)]
         gr = GildedRose(items)
 
         gr.update_quality()
 
-        self.assertEqual([(item.sell_in, item.quality) for item in items], [(0, 1), (1, 2)])
+        self.assertEqual(8, items[0].quality)
 
+    # The above 3 incorrect tests will be successfully passed by modifying the original code and applying the design pattern strategy.
 if __name__ == '__main__':
     unittest.main()
